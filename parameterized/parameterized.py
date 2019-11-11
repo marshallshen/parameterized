@@ -579,16 +579,32 @@ def parameterized_class(attrs, input_values=None):
             if isinstance(name_suffix, (list, tuple)) and len(input_values) > 0:
                 name_suffix = name_suffix[0]
             name_suffix = (
-                "_%s" %(name_suffix, ) if isinstance(name_suffix, string_types) else
-                ""
-            )
+                    "_%s" %(name_suffix, ) if isinstance(name_suffix, string_types) else
+                    ""
+                    )
 
             name = "%s_%s%s" %(
-                base_class.__name__,
-                idx,
-                name_suffix,
-            )
+                    base_class.__name__,
+                    idx,
+                    name_suffix,
+                    )
 
             test_class_module[name] = type(name, (base_class, ), test_class_dict)
+
+        # TODO:
+        # type(name, base, dict) defines new metaclass e.g. TestClass_0
+        # inside setUp(), the function expects (className, classInstance)
+        # but the className is the old class name, whereas the classInstance is
+        # off the new metaClass.
+        #
+        # The difference between the old class and the meta class are
+        # the monkey patched variables
+        #
+        # Below are some unfruitable attempts:
+        #
+        # return base_class
+        # test_class_module[base_class.__name__] = type(base_class)
+        # from collections import namedtuple
+        # return namedtuple(base_class.__name__, test_class_module, rename=True)
 
     return decorator

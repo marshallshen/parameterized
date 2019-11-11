@@ -497,3 +497,16 @@ class TestParameterizedClassDict(TestCase):
             self.foo,
             self.bar,
         ))
+
+@parameterized_class([
+    {"foo": "bar"}
+])
+class TestParameterizedClassSuper(TestCase):
+    def setUp(self):
+        try:
+            super(TestParameterizedClassSuper, self).setUp()
+        except Exception:
+            import pdb; pdb.set_trace()
+
+    def test_method(self):
+        assert True
